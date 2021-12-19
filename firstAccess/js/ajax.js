@@ -4,22 +4,40 @@ function handleBtnClick() {
   let num = document.getElementById("idtxt").value;
   //"https://jsonplaceholder.typicode.com/posts/1
   // sendXHRGET("https://jsonplaceholder.typicode.com/posts/" + num);
-  sendXHRGETCallBack(
+  // sendXHRGETCallBack(
+  //   "https://jsonplaceholder.typicode.com/posts/" + num,
+  //   function (res) {
+  //     let resObj = JSON.parse(res);
+  //     document.getElementById("postsDiv").innerHTML += `
+  //   <div class="card" style="width: 18rem;">
+  //     <div class="card-body">
+  //       <h5 class="card-title">${resObj.title}</h5>
+  //       <p class="card-text">${resObj.body}</p>
+  //       <button type="button" class="btn btn-danger">Danger</button>
+  //     </div>
+  //   </div>
+  //   `;
+  //   }
+  // );
+  sendXHRCallBack(
     "https://jsonplaceholder.typicode.com/posts/" + num,
     function (res) {
-      resObj = JSON.parse(res);
+      let resObj = JSON.parse(res);
       document.getElementById("postsDiv").innerHTML += `
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="width: 18rem;" id="post_${resObj.id}">
       <div class="card-body">
         <h5 class="card-title">${resObj.title}</h5>
         <p class="card-text">${resObj.body}</p>
-        <a href="#" class="card-link">Card link</a>
-        <a href="#" class="card-link">Another link</a>
+        <button type="button" class="btn btn-danger" onclick="handleDeleteBtnClick('post_${resObj.id}')">Delete</button>
       </div>
     </div>
     `;
     }
   );
+}
+
+function handleDeleteBtnClick(id) {
+  console.log("id to be deleted", id);
 }
 
 function sendXHRGET(url) {
@@ -65,6 +83,31 @@ function sendXHRGETCallBack(url, cb) {
   };
   //set the method and the url of the ajax request
   xhttp.open("GET", url, true);
+  //send the actual request
+  xhttp.send();
+}
+
+//this function ask for url and callback function
+function sendXHRCallBack(url, cb, method = "GET") {
+  //create ajax request
+  const xhttp = new XMLHttpRequest();
+  //capture ready state
+  xhttp.onreadystatechange = function () {
+    // console.log("this.readyState", this.readyState);
+    // console.log("this.status", this.status);
+    // console.log("this.responseText", this.responseText);
+    //when the response was successful then it will display the response in the console
+    if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+      // console.log(this.responseText);
+      //call for the callback function
+      cb(this.responseText);
+    }
+  };
+  xhttp.onerror = function (errorEvent) {
+    console.log("ERRO", errorEvent);
+  };
+  //set the method and the url of the ajax request
+  xhttp.open(method, url, true);
   //send the actual request
   xhttp.send();
 }
