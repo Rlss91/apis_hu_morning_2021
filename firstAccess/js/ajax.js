@@ -117,7 +117,7 @@ function handleDeleteBtnClick(elmid, serverid) {
 // }
 
 //this function ask for url and callback function
-function sendXHRCallBack(url, cb, method = "GET", body = undefined) {
+function sendXHRCallBack(url, cb, method = "GET", data = undefined) {
   //create ajax request
   const xhttp = new XMLHttpRequest();
   //capture ready state
@@ -141,8 +141,8 @@ function sendXHRCallBack(url, cb, method = "GET", body = undefined) {
   xhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
   //send the actual request
-  if (body) {
-    xhttp.send(JSON.stringify(body));
+  if (data) {
+    xhttp.send(JSON.stringify(data));
   } else {
     xhttp.send();
   }
