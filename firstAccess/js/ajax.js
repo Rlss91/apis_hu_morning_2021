@@ -28,7 +28,7 @@ function handleBtnClick() {
       <div class="card-body">
         <h5 class="card-title">${resObj.title}</h5>
         <p class="card-text">${resObj.body}</p>
-        <button type="button" class="btn btn-danger" onclick="handleDeleteBtnClick('post_${resObj.id}')">Delete</button>
+        <button type="button" class="btn btn-danger" onclick="handleDeleteBtnClick('post_${resObj.id}', '${resObj.id}')">Delete</button>
       </div>
     </div>
     `;
@@ -36,8 +36,15 @@ function handleBtnClick() {
   );
 }
 
-function handleDeleteBtnClick(id) {
-  console.log("id to be deleted", id);
+function handleDeleteBtnClick(elmid, serverid) {
+  // console.log("id to be deleted", id);
+  sendXHRCallBack(
+    "https://jsonplaceholder.typicode.com/posts/" + serverid,
+    function (res) {
+      document.getElementById(elmid).remove();
+    },
+    "DELETE"
+  );
 }
 
 function sendXHRGET(url) {
