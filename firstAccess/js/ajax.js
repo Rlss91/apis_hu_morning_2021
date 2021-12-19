@@ -1,4 +1,17 @@
-window.addEventListener("load", () => {});
+window.addEventListener("load", () => {
+  sendXHRCallBack(
+    "https://jsonplaceholder.typicode.com/posts",
+    function (res) {
+      console.log("response from server using post request", res);
+    },
+    "POST",
+    {
+      title: "foo",
+      body: "bar",
+      userId: 1,
+    }
+  );
+});
 
 function handleBtnClick() {
   let num = document.getElementById("idtxt").value;
@@ -95,7 +108,7 @@ function sendXHRGETCallBack(url, cb) {
 }
 
 //this function ask for url and callback function
-function sendXHRCallBack(url, cb, method = "GET") {
+function sendXHRCallBack(url, cb, method = "GET", body = undefined) {
   //create ajax request
   const xhttp = new XMLHttpRequest();
   //capture ready state
@@ -104,7 +117,10 @@ function sendXHRCallBack(url, cb, method = "GET") {
     // console.log("this.status", this.status);
     // console.log("this.responseText", this.responseText);
     //when the response was successful then it will display the response in the console
-    if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+    if (
+      this.readyState == XMLHttpRequest.DONE &&
+      (this.status == 200 || this.status == 201)
+    ) {
       // console.log(this.responseText);
       //call for the callback function
       cb(this.responseText);
@@ -115,6 +131,14 @@ function sendXHRCallBack(url, cb, method = "GET") {
   };
   //set the method and the url of the ajax request
   xhttp.open(method, url, true);
+
+  //set headers
+  xhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
   //send the actual request
-  xhttp.send();
+  if (body) {
+    xhttp.send(JSON.stringify(body));
+  } else {
+    xhttp.send();
+  }
 }
